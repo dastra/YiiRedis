@@ -87,7 +87,7 @@ class ARedisSortedSet extends ARedisIterableEntity {
 		}
 		$total = call_user_func_array(array(
 									 $this->getConnection()->getClient(),
-									"zinter"
+									"zinterstore"
 								),$parameters);
 		$destination->_count = $total;
 		return $destination;
@@ -131,7 +131,7 @@ class ARedisSortedSet extends ARedisIterableEntity {
 		}
 		$total = call_user_func_array(array(
 									 $this->getConnection()->getClient(),
-									"zunion"
+									"zunionstore"
 								),$parameters);
 		$destination->_count = $total;
 		return $destination;
@@ -168,7 +168,9 @@ class ARedisSortedSet extends ARedisIterableEntity {
 	 */
 	public function getData($forceRefresh = false) {
 		if ($forceRefresh || $this->_data === null) {
-			$this->_data = $this->getConnection()->getClient()->zrange($this->name,0, -1, true);
+			$rangeWithScores = $this->getConnection()->getClient()->zrange($this->name, 0, -1, 'WITHSCORES');
+            foreach ($rangeWithScores as $data)
+                $this->_data[$data[0]] = $data[1];
 		}
 		return $this->_data;
 	}

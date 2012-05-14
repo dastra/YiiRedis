@@ -81,7 +81,11 @@ class ARedisConnection extends CApplicationComponent {
 	 */
 	public function getClient()
 	{
-		if ($this->_client === null) {
+		if ($this->_client === null)
+        {
+            if (!self::$registeredScripts)
+                $this->registerScripts();
+
             /** @var $serverProfile Predis\Profiles\ServerProfile */
             $serverProfile = Predis\Profiles\ServerProfile::get(self::SERVER_VERSION);
 
@@ -92,8 +96,9 @@ class ARedisConnection extends CApplicationComponent {
             );
 
             if (!is_null($this->password))
+            {
                 $configSettings['password'] = $this->password;
-
+            }
             /** @var $connection \Predis\Client */
             $this->_client = new Client($configSettings, $serverProfile);
             $this->_client->connect();

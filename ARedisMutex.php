@@ -84,7 +84,7 @@ class ARedisMutex extends ARedisEntity {
 		}
 
 
-		$redis->delete($this->name);
+		$redis->del($this->name);
 		$this->afterUnlock();
 		return true;
 	}

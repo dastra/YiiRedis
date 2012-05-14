@@ -69,12 +69,17 @@ class ARedisCache extends CCache {
 	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
-	protected function setValue($key,$value,$expire = 0) {
-
-		$this->getConnection()->getClient()->set($key,$value);
-		if ($expire) {
-			$this->getConnection()->getClient()->expire($key,$expire);
-		}
+	protected function setValue($key,$value,$expire = 0)
+    {
+        if ($expire)
+        {
+            $pipe = $this->getConnection()->getClient()->pipeline();
+            $pipe->set($key, $value);
+            $pipe->expire($key, $expire);
+            $pipe->execute();
+        } else {
+            $this->getConnection()->getClient()->set($key,$value);
+        }
 	}
 
 	/**
@@ -108,7 +113,7 @@ class ARedisCache extends CCache {
 	 * @return boolean if no error happens during deletion
 	 */
 	protected function deleteValue($key) {
-		return $this->getConnection()->getClient()->delete($key);
+		return $this->getConnection()->getClient()->del($key);
 	}
 
 	/**

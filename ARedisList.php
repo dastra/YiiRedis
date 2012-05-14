@@ -134,7 +134,7 @@ class ARedisList extends ARedisIterableEntity {
 			if ($this->name === null) {
 				throw new CException(get_class($this)." requires a name!");
 			}
-			$this->_count = (int) $this->getConnection()->getClient()->lSize($this->name);
+			$this->_count = (int) $this->getConnection()->getClient()->llen($this->name);
 		}
 		return $this->_count;
 	}

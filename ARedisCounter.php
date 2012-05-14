@@ -23,7 +23,7 @@ class ARedisCounter extends ARedisEntity {
 	 */
 	public function clear() {
 		$this->_value = null;
-		$this->getConnection()->getClient()->delete($this->name);
+		$this->getConnection()->getClient()->del($this->name);
 		return $this;
 	}
 

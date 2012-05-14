@@ -72,7 +72,7 @@ class ARedisSession extends CHttpSession
 	 */
 	public function destroySession($id)
 	{
-		$this->_connection->getClient()->delete($this->calculateKey($id));
+		$this->_connection->getClient()->del($this->calculateKey($id));
 		return true;
 	}
 
