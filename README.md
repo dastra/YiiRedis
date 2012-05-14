@@ -5,7 +5,21 @@ When you add or remove items from redis entities (lists, sets, sorted sets, hash
 are pushed to the server immediately, this is useful when your application needs to make information
 available across multiple requests.
 
-This package relies on the https://github.com/nicolasff/phpredis PHP extension, please make sure this is installed before continuing.
+This package relies on https://github.com/nrk/predis which is installed as part of the package.  It requires Redis 2.2+.
+
+<h2>Installation</h2>
+
+If you do not already have a packages directory and alias set up, first create a directory called "packages"
+in your application folder. Then add an alias to your main config, e.g.
+
+<pre>
+    'aliases' => array(
+        "packages" => dirname(__DIR__). DIRECTORY_SEPARATOR . "packages" . DIRECTORY_SEPARATOR,
+    ),
+    ...
+</pre>
+
+Now extract the files in the "packages" directory to give you packages/redis.
 
 <h2>Usage</h2>
 
@@ -16,7 +30,9 @@ This package relies on the https://github.com/nicolasff/phpredis PHP extension, 
 	"redis" => array(
 		"class" => "packages.redis.ARedisConnection",
 		"hostname" => "localhost",
-		"port" => 6379
+		"port" => 6379,
+		"database" => 3,
+		"password" => "agreatbiglongpassword", # optional
 	),
 	...
 ),

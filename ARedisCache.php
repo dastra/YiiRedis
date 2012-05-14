@@ -31,9 +31,11 @@ class ARedisCache extends CCache {
 	public function getConnection()
 	{
 		if ($this->_connection === null) {
+            /** @noinspection PhpUndefinedFieldInspection  */
 			if (!isset(Yii::app()->redis)) {
 				throw new CException("ARedisCache expects a 'redis' application component");
 			}
+            /** @noinspection PhpUndefinedFieldInspection  */
 			$this->_connection = Yii::app()->redis;
 		}
 		return $this->_connection;

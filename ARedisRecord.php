@@ -381,13 +381,13 @@ abstract class ARedisRecord extends CFormModel {
 	public function findAllByPk($pks)
 	{
 		Yii::trace(get_class($this).'.findAllByPk()','packages.redis.ARedisRecord');
-		$hashes = array();
-		$redis = $this->getRedisConnection()->getClient()->multi();
+
+		$this->getRedisConnection()->getClient()->multi();
 		foreach($pks as $pk) {
 			$key = $this->getRedisKey($pk);
-			$redis->hGetAll($key);
+            $this->getRedisConnection()->getClient()->hGetAll($key);
 		}
-		$response = $redis->exec();
+		$response = $this->getRedisConnection()->getClient()->exec();
 		$rows = array();
 		foreach($response as $row) {
 			if (!$row || !count($row)) {
@@ -599,7 +599,7 @@ abstract class ARedisRecord extends CFormModel {
 
 	/**
 	 * Sets the redis hash to use with this record
-	 * @param ARedisIterableHash $redisHash the redis hash
+	 * @param ARedisIterableEntity $redisHash the redis hash
 	 */
 	public function setRedisHash($redisHash)
 	{
@@ -608,7 +608,7 @@ abstract class ARedisRecord extends CFormModel {
 
 	/**
 	 * Gets the redis hash to store the attributes for this record in
-	 * @return ARedisIterableHash the redis hash
+	 * @return ARedisIterableEntity the redis hash
 	 */
 	public function getRedisHash()
 	{
@@ -620,7 +620,7 @@ abstract class ARedisRecord extends CFormModel {
 
 	/**
 	 * Sets the redis set that contains the ids of the models of this type
-	 * @param ARedisIterableSet $redisSet the redis set
+	 * @param ARedisIterableEntity $redisSet the redis set
 	 */
 	public function setRedisSet($redisSet)
 	{
@@ -629,7 +629,7 @@ abstract class ARedisRecord extends CFormModel {
 
 	/**
 	 * Gets the redis set that contains the ids of the models of this type
-	 * @return ARedisIterableSet the redis set
+	 * @return ARedisIterableEntity the redis set
 	 */
 	public function getRedisSet()
 	{

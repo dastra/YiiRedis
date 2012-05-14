@@ -2,7 +2,7 @@
 /**
  * A base class for iterable redis entities (lists, hashes, sets and sorted sets)
  * @author Charles Pick
- * @package packages.redis
+ * @package application.extensions.redis
  */
 abstract class ARedisIterableEntity extends ARedisEntity implements IteratorAggregate,ArrayAccess,Countable {
 
@@ -26,7 +26,9 @@ abstract class ARedisIterableEntity extends ARedisEntity implements IteratorAggr
 	 */
 	public function getIterator()
 	{
-		return new CListIterator($this->getData());
+        // To avoid "Only variables should be passed by reference" error when strict is on.
+        $allData = $this->getData();
+		return new CListIterator($allData);
 	}
 
 	/**
@@ -77,7 +79,7 @@ abstract class ARedisIterableEntity extends ARedisEntity implements IteratorAggr
 	public function clear() {
 		$this->_data = null;
 		$this->_count = null;
-		$this->getConnection()->getClient()->delete($this->name);
+		$this->getConnection()->getClient()->del($this->name);
 		return $this;
 	}
 

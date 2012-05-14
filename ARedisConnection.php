@@ -1,14 +1,18 @@
 <?php
+
+use Predis\Profiles\ServerProfile;
+use Predis\Client;
+
 /**
  * Represents a redis connection.
  *
  * @author Charles Pick
- * @package packages.redis
+ * @package application.extensions.redis
  */
 class ARedisConnection extends CApplicationComponent {
 	/**
 	 * The redis client
-	 * @var Redis
+	 * @var Predis\Client
 	 */
 	protected $_client;
 
@@ -30,24 +34,69 @@ class ARedisConnection extends CApplicationComponent {
 	 */
 	public $database=1;
 
+    /**
+     * The password to use, defaults to none
+     * @var string
+     */
+    public $password = null;
+
+    /** We're using version 2.2 minimum. */
+    const SERVER_VERSION = '2.2';
+
+    /** @var bool indicates whether the Predis scripts have been registered. */
+    private static $registeredScripts = false;
+
+    /**
+     * Calls the {@link registerScripts()} method.
+     */
+    public function init()
+    {
+        $this->registerScripts();
+        parent::init();
+    }
+
+    /**
+     * Registers Predis autoloader and includes the required files
+     */
+    public function registerScripts()
+    {
+        if (self::$registeredScripts) return;
+        self::$registeredScripts = true;
+        require dirname(__FILE__) . '/StaticPredisAutoloader.php';
+        Yii::registerAutoloader(array('StaticPredisAutoloader','autoload'));
+    }
+
 	/**
 	 * Sets the redis client to use with this connection
-	 * @param Redis $client the redis client instance
+	 * @param Predis\Client $client the redis client instance
 	 */
-	public function setClient(Redis $client)
+	public function setClient(Predis\Client $client)
 	{
 		$this->_client = $client;
 	}
 
 	/**
 	 * Gets the redis client
-	 * @return Redis the redis client
+	 * @return Predis\Client the redis client
 	 */
 	public function getClient()
 	{
 		if ($this->_client === null) {
-			$this->_client = new Redis;
-			$this->_client->connect($this->hostname, $this->port);
+            /** @var $serverProfile Predis\Profiles\ServerProfile */
+            $serverProfile = Predis\Profiles\ServerProfile::get(self::SERVER_VERSION);
+
+            $configSettings = array(
+                'host' => $this->hostname,
+                'port' => $this->port,
+                'database' => $this->database,
+            );
+
+            if (!is_null($this->password))
+                $configSettings['password'] = $this->password;
+
+            /** @var $connection \Predis\Client */
+            $this->_client = new Client($configSettings, $serverProfile);
+            $this->_client->connect();
 		}
 		return $this->_client;
 	}
