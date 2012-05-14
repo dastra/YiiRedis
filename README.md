@@ -20,8 +20,8 @@ in your application folder. Then add an alias to your main config, e.g.
 </pre>
 
 Now either:
-a) Download the redis.zip file and extract it into the "packages" directory or
-b) in your Yii application root:
+1 Download the redis.zip file and extract it into the "packages" directory or
+2 in your Yii application root:
 <pre>
 git submodule add https://github.com/dastra/YiiRedis src/protected/packages/redis
 cd src/protected/packages/redis
