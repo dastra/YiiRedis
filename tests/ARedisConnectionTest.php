@@ -20,7 +20,7 @@ class ARedisConnectionTest extends CTestCase {
 		$this->assertEquals(null,$redis->get($keyId));
 		$redis->set($keyId,"TEST");
 		$this->assertEquals("TEST",$redis->get($keyId));
-		$redis->delete($keyId);
+		$redis->del($keyId);
 		$this->assertEquals(null,$redis->get($keyId));
 	}
 
@@ -45,7 +45,8 @@ class ARedisConnectionTest extends CTestCase {
 										"class" => "packages.redis.ARedisConnection",
 										"hostname" => REDIS_HOSTNAME,
 										"port" => REDIS_PORT,
-										"database" => REDIS_DATABASE
+										"database" => REDIS_DATABASE,
+                                        "password" => REDIS_PASSWORD
 									));
 		}
 		return $this->_connection;
