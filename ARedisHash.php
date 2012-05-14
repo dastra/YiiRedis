@@ -52,7 +52,9 @@ class ARedisHash extends ARedisIterableEntity {
 	 */
 	public function getIterator()
 	{
-		return new CMapIterator($this->getData());
+        // To avoid the "Only variables should be passed by reference" error when strict is on
+        $data = $this->getData();
+		return new CMapIterator($data);
 	}
 
 	/**
